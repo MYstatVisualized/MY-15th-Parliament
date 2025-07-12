@@ -1,0 +1,24 @@
+# Attendance of 15th Malaysian Parliament
+
+## Latest Update
+
+![time](static/time.png)
+![mp](static/mp.png)
+![party](static/party.png)
+![age](static/age.png)
+![compose](static/age_parliament.png)
+![compose](static/compose.png)
+![distribute](static/distribute.png)
+
+## Method
+
+1. Download [Hansard](https://www.parlimen.gov.my/hansard-dewan-rakyat.html?uweb=dr&arkib=yes)
+2. Parse attendance pages into [CVS](dataset) using LLM with prompt:
+   ```text
+   tabulate the attendance of the member of parliment from this pdf, and 
+   save into CSV with format: Absent/Present,Name without tittle,Constituency
+   ```
+3. Plot attendances with 
+   ```commandline
+   python plot.py
+   ```
