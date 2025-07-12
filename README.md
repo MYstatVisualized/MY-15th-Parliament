@@ -1,6 +1,9 @@
 # Attendance of 15th Malaysian Parliament
 
-## Latest Update
+## Tracking Range
+From **2023-Oct-10** to **2025-May-05**
+
+## Results
 
 ![time](static/time.png)
 ![mp](static/mp.png)
