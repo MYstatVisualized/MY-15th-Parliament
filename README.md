@@ -12,6 +12,7 @@ From **2023-Oct-10** to **2025-May-05**
 ![compose](static/age_parliament.png)
 ![compose](static/compose.png)
 ![distribute](static/distribute.png)
+![gender](static/gender.png)
 
 ## Method
 

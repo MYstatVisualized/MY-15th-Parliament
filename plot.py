@@ -45,9 +45,10 @@ def load_csv():
         constituency=np.array(ddata[list(ddata.keys())[0]][2]),
         attendance=atte * 100 / len(ddata.keys()),
         session=np.array(sorted(list(ddata.keys())), dtype=int),
+        gender=[],
         party=[],
         age=[])
-    # party, age
+    # party, age, gender
     for cont in atte['constituency']:
         mp_idx = mp_attr[3].index(cont.title())
         atte['party'].append(mp_attr[1][mp_idx])
@@ -55,8 +56,10 @@ def load_csv():
             atte['age'].append(datetime.today().year - datetime.strptime(mp_attr[5][mp_idx].rstrip(' '), '%d %B %Y').year)
         else:
             atte['age'].append(0)
+        atte['gender'].append(mp_attr[4][mp_idx])
     atte['age'] = np.array(atte['age'])
     atte['party'] = np.array(atte['party'])
+    atte['gender'] = np.array(atte['gender'])
     return atte, ddata
 
 
@@ -190,6 +193,26 @@ def main():
     fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), location='bottom',
                  cax=ax[-1, -1].inset_axes([-4, -0.5, 4, 0.1]), label='Age Range')
     fig.suptitle('Age Composition of Party')
+    plt.subplots_adjust(left=0.025, right=0.975, top=0.955, bottom=0.115, hspace=0, wspace=0.165)
+    plt.show()
+
+    # party gender composition
+    party_gender = []
+    for party_ in parties:
+        mskl = (mps['gender'] == 'Lelaki') * (mps['party'] == party_)
+        mskp = (mps['gender'] == 'Perempuan') * (mps['party'] == party_)
+        party_gender.append([mskl.sum().item(), mskp.sum().item()])
+    party_gender = np.array(party_gender)
+    fig, ax = plt.subplots(2, int(np.ceil(parties.shape[0] / 2.)))
+    for i in range(parties.shape[0]):
+        # pie chart
+        ij = i // ax.shape[1], i % ax.shape[1]
+        wedges, texts, _ = ax[ij[0], ij[1]].pie(party_gender[i], radius=1.4, colors=['lightskyblue', 'plum'],
+                                                startangle=-90, counterclock=False, pctdistance=0.75,
+                                                wedgeprops=dict(width=0.9), textprops=dict(size='larger'),
+                                                autopct=lambda pct: str(int(np.round(pct / 100. * party_gender[i].sum().item()))))
+        ax[ij[0], ij[1]].set_title(parties[i], pad=10)
+    fig.suptitle('Gender Composition of Party')
     plt.subplots_adjust(left=0.025, right=0.975, top=0.955, bottom=0.115, hspace=0, wspace=0.165)
     plt.show()
 
