@@ -8,6 +8,7 @@
 
 ![time](static/time.png)
 ![mp](static/mp.png)
+![perfect](static/perfect.png)
 ![party](static/party.png)
 ![age](static/age.png)
 ![compose](static/age_parliament.png)
@@ -23,7 +24,7 @@
    tabulate the attendance of the member of parliment from this pdf,
    and save into CSV with format: Absent/Present,Name without tittle,Constituency
    ```
-3. Plot attendances with 
+3. Plot with 
    ```commandline
    python plot.py
    ```

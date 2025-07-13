@@ -69,7 +69,7 @@ def main():
     print(mps['session'].shape[0], 'Session:')
     print(*session, sep='\n')
 
-    # individual mp attendance
+    # individual mp attendance: failed
     fig, ax = plt.subplots()
     idx_atte = np.argsort(mps['attendance'] * -1)
     attendance = mps['attendance'][idx_atte]
@@ -86,6 +86,33 @@ def main():
     plt.title('MP with <50% Attendance')
     ax.set_ylim(0, 50)
     plt.tight_layout()
+    plt.show()
+
+    # individual mp attendance: perfect
+    fig, ax = plt.subplots()
+    idx_atte = np.argsort(mps['attendance'] * -1)
+    attendance = mps['attendance'][idx_atte]
+    constituency = mps['constituency'][idx_atte]
+    party = mps['party'][idx_atte]
+    mp_msk = attendance == 100
+    party_perfect = np.unique(party[mp_msk])
+    cont_perfect = []
+    for party_ in party_perfect:
+        cont_perfect.append(constituency[mp_msk * (party == party_)])
+    wedges, _ = ax.pie([conts.shape[0] for conts in cont_perfect], startangle=50, counterclock=False,
+                       labels=party_perfect, labeldistance=0.5, textprops=dict(size='larger'),
+                       colors=[color_party[np.where(parties == party_)[0].item()] for party_ in party_perfect])
+    kw = dict(arrowprops=dict(arrowstyle="-"), zorder=0, va="center", size='larger')
+    for i, p in enumerate(wedges):
+        ang = (p.theta2 - p.theta1) / 2. + p.theta1
+        y = np.sin(np.deg2rad(ang))
+        x = np.cos(np.deg2rad(ang))
+        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+        connectionstyle = f"angle,angleA=0,angleB={ang}"
+        kw["arrowprops"].update({"connectionstyle": connectionstyle})
+        ax.annotate('\n'.join(cont_perfect[i]), xy=(x, y), xytext=(1.2 * np.sign(x), 1.6 * y),
+                    horizontalalignment=horizontalalignment, **kw)
+    fig.suptitle('Perfect Attendance')
     plt.show()
 
     # party attendance
@@ -127,6 +154,7 @@ def main():
             msk = mps['party'] == party
             atten_ = (np.array(rawdata[str(sess)][0]) == 'Present')[msk].mean()
             atten[isess, ipar] = atten_ * 100 / parties.shape[0]
+    print(atten.mean() * parties.shape[0])
     fig, ax = plt.subplots()
     x = np.arange(mps['session'].shape[0])
     # bottom = np.zeros(mps['session'].shape[0])
