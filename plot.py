@@ -23,7 +23,7 @@ def load_csv():
         ddata[dr_date] = list(zip(*reader))
         # check missing constituency
         if len(ddata[dr_date][2]) != 222:
-            for cont in mp_attr[4]:
+            for cont in mp_attr[3]:
                 try:
                     ddata[dr_date][2].index(cont)
                 except:
@@ -49,10 +49,10 @@ def load_csv():
         age=[])
     # party, age
     for cont in atte['constituency']:
-        mp_idx = mp_attr[4].index(cont.title())
-        atte['party'].append(mp_attr[2][mp_idx])
-        if mp_attr[6][mp_idx] != '':
-            atte['age'].append(datetime.today().year - datetime.strptime(mp_attr[6][mp_idx], '%A, %d %B %Y').year)
+        mp_idx = mp_attr[3].index(cont.title())
+        atte['party'].append(mp_attr[1][mp_idx])
+        if mp_attr[5][mp_idx] != '':
+            atte['age'].append(datetime.today().year - datetime.strptime(mp_attr[5][mp_idx].rstrip(' '), '%d %B %Y').year)
         else:
             atte['age'].append(0)
     atte['age'] = np.array(atte['age'])
