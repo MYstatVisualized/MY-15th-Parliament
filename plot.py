@@ -115,7 +115,7 @@ def main():
     color_age = cmap(np.linspace(0, 1, years.shape[0]))
     fig, ax = plt.subplots()
     for iy, ty in enumerate(years):
-        msk = (mps['age'] > ty) * (mps['age'] <= (ty + dy))
+        msk = (mps['age'] >= ty) * (mps['age'] < (ty + dy))
         attendances[iy] = mps['attendance'][msk].mean()
     ax.bar(years+dy/2, attendances, width=dy, edgecolor='white', color=color_age)
     ax.set_ylabel('Attendance (%)')
@@ -154,12 +154,13 @@ def main():
     # party age composition
     starty, endy, dy = 20, 90, 14
     years = np.array(list(range(starty, endy, dy)))
+    cmap = matplotlib.colormaps['cool']
     color_age = cmap(np.linspace(0, 1, years.shape[0]))
     party_age = []
     for party_ in parties:
         party_age_ = []
         for iy, ty in enumerate(years):
-            msk = (mps['party'] == party_) * (mps['age'] > ty) * (mps['age'] <= (ty + dy))
+            msk = (mps['party'] == party_) * (mps['age'] >= ty) * (mps['age'] < (ty + dy))
             party_age_.append(msk.sum())
         party_age.append(party_age_)
     party_age = np.array(party_age)
@@ -171,7 +172,7 @@ def main():
                                                 startangle=-90, counterclock=False,
                                                 wedgeprops=dict(width=0.9),
                                                 textprops=dict(size='larger'), pctdistance=0.75,
-                                                autopct=lambda pct: str(int(pct / 100. * party_age[i].sum().item())) if pct > 5 else '')
+                                                autopct=lambda pct: str(int(np.round(pct / 100. * party_age[i].sum().item()))) if pct > 5 else '')
         ax[ij[0], ij[1]].set_title(parties[i], pad=10)
         # narrow pie indicator
         kw = dict(arrowprops=dict(arrowstyle="-"), zorder=0, va="center")
@@ -225,7 +226,7 @@ def main():
     for party_ in parties:
         party_age_ = []
         for iy, ty in enumerate(years):
-            msk = (mps['party'] == party_) * (mps['age'] > ty) * (mps['age'] <= (ty + dy))
+            msk = (mps['party'] == party_) * (mps['age'] >= ty) * (mps['age'] < (ty + dy))
             party_age_.append(msk.sum())
         party_age.append(party_age_)
     party_age = np.array(party_age)
@@ -247,6 +248,7 @@ def main():
     # parliament age distribution
     starty, endy, dy = 20, 90, 10
     years = np.array(list(range(starty, endy, dy)))
+    print(mps['age'].mean(), np.median(mps['age']))
     party_age = []
     for party_ in parties:
         party_age_ = []
