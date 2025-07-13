@@ -9,39 +9,34 @@ from scipy.interpolate import make_smoothing_spline
 
 
 def load_csv():
-    # attributes ['full_name', 'name', 'party', 'ccode', 'constituency', 'gender', 'dob']
+    # attributes ['name', 'party', 'ccode', 'constituency', 'gender', 'dob']
     f_mp_attr = path.join(path.dirname(__file__), '15mps.csv')
     mp_attr = csv.reader(open(f_mp_attr, 'r'), delimiter=',')
     mp_attr = list(zip(*mp_attr))
 
     # load data
     ddata = {}
-    for f_dr in glob.glob(path.join(path.dirname(__file__), 'dataset/DR-*.csv')):
+    atte = np.zeros(len(mp_attr[3]), dtype=int)
+    for f_dr in sorted(glob.glob(path.join(path.dirname(__file__), 'dataset/DR-*.csv'))):
         dr_date = f_dr.split('/')[-1].rstrip('.csv').strip('DR-')
         dr_date = dr_date[-4:] + dr_date[-6:-4] + dr_date[:2]
         reader = csv.reader(open(f_dr, 'r'), delimiter=',')
         ddata[dr_date] = list(zip(*reader))
         # check missing constituency
-        if len(ddata[dr_date][2]) != 222:
-            for cont in mp_attr[3]:
-                try:
-                    ddata[dr_date][2].index(cont)
-                except:
-                    print('Missing', cont, dr_date)
-                    ddata[dr_date][0] = ddata[dr_date][0] + ('Absent',)
-                    ddata[dr_date][1] = ddata[dr_date][1] + ('',)
-                    ddata[dr_date][2] = ddata[dr_date][2] + (cont,)
-    # sort according to cont
-    for date in ddata.keys():
-        cont_sort = np.argsort(ddata[date][2])
+        for cont in mp_attr[3]:
+            if cont not in ddata[dr_date][2]:
+                print('Missing', cont, dr_date)
+                ddata[dr_date][0] = ddata[dr_date][0] + ('Absent',)
+                ddata[dr_date][1] = ddata[dr_date][1] + ('',)
+                ddata[dr_date][2] = ddata[dr_date][2] + (cont,)
+        # sort according to cont
+        cont_sort = np.argsort(ddata[dr_date][2])
         for i in range(3):
-            ddata[date][i] = [ddata[date][i][idx] for idx in cont_sort]
-    # attendance
-    atte = np.zeros(cont_sort.shape[0], dtype=int)
-    for date in ddata.keys():
-        atte = atte + (np.array(ddata[date][0]) == 'Present').astype(int)
+            ddata[dr_date][i] = [ddata[dr_date][i][idx] for idx in cont_sort]
+        # attendance
+        atte = atte + (np.array(ddata[dr_date][0]) == 'Present').astype(int)
     atte = dict(
-        name=np.array(ddata[list(ddata.keys())[0]][1]),
+        # name=np.array(ddata[list(ddata.keys())[0]][1]),
         constituency=np.array(ddata[list(ddata.keys())[0]][2]),
         attendance=atte * 100 / len(ddata.keys()),
         session=np.array(sorted(list(ddata.keys())), dtype=int),
