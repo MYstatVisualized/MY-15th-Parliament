@@ -17,7 +17,7 @@ def load_csv():
     # load data
     ddata = {}
     atte = np.zeros(len(mp_attr[3]), dtype=int)
-    for f_dr in sorted(glob.glob(path.join(path.dirname(__file__), 'dataset/DR-*.csv'))):
+    for f_dr in sorted(glob.glob(path.join(path.dirname(__file__), 'dataset/attendance/DR-*.csv'))):
         dr_date = f_dr.split('/')[-1].rstrip('.csv').strip('DR-')
         dr_date = dr_date[-4:] + dr_date[-6:-4] + dr_date[:2]
         reader = csv.reader(open(f_dr, 'r'), delimiter=',')
