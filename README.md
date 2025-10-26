@@ -1,7 +1,8 @@
 # Attendance of 15th Malaysian Parliament
 
 ## Details
-- Tracking Range: Total 194 sessions from **2022-Dec-19** to **2025-Aug-28**
+- Tracking Range: Total 194 sessions from **2022-Dec-19** to **2025-Oct-23**
+- Missing Hansard from 2025-Oct-16
 - Vacant Seat: _Kemaman_ and _Pulai_ were vacant for 29 and 5 several sessions respectively
 
 ## Results
